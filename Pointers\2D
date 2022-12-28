@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <string.h>
+/*LABORATORIA
+int main()
+{
+    char imie[100], nazwisko[100];
+    int i, licznikcyfr=0, licznikliter=0;
+    gets(imie);
+    gets(nazwisko);
+    imie[0]= toupper(imie[0]);
+    nazwisko[0]= toupper(nazwisko[0]);
+    printf("%c", imie[0]);
+    printf("%c\n", nazwisko[0]);
+    for(i=0;i<strlen(imie);i++){
+        if(isdigit(imie[i])){
+            licznikcyfr+=1;
+        }
+        if(isalpha(imie[i])){
+            licznikliter+=1;
+        }
+    }
+    printf("Licznik cyfr pierwszego ciagu: %d\n", licznikcyfr);
+    printf("Licznik liter pierwszego ciagu: %d\n", licznikliter);
+}
+*/
+/*
+int main()
+{
+    char tablica[3][4];
+    int i,j=0, suma=0;
+    for(i=0;i<3;i++){
+        gets(tablica[i]);
+    }
+    for(i=0;i<3;i++){
+        suma+=atoi(tablica[i]);
+    }
+    printf("%d", suma);
+}
+*/
+/*
+int main()
+{
+    char tablica[4][50], G1[4][50], G2[4][50];
+    int k1=0,k2=0,i, n, j;
+    for(i=0;i<4;i++){
+        gets(tablica[i]);
+        n=strlen(tablica[i]);
+        if(tablica[i][0]=='1'){
+            for(j=2;j<n;j++){
+                G1[k1][j-2]=tablica[i][j];
+            }
+            k1+=1;
+        }
+        if(tablica[i][0]=='2'){
+            for(j=2;j<n;j++){
+                G2[k2][j-2]=tablica[i][j];
+            }
+            k2+=1;
+        }
+    }
+    for(i=0;i<k1;i++){
+        puts(G1[i]);
+    }
+    printf("-------\n");
+    for(i=0;i<k2;i++){
+        puts(G2[i]);
+    }
+}
+*/
+
+
+/*WYKŁAD WSKAŹNIKI
+int main() {
+    short swar[] = {10, 20, 30, 40, 50};
+    short *p_short, i;
+    printf ("Zawartosc tablicy: \n");
+    for (i=0; i<5; i++) {
+        printf ("%d ", swar[i]);
+        printf("\n") ;
+    }
+    p_short = &swar[0];
+    printf ("wskaznik p_short = %p wskazuje %d\n", p_short, *p_short);
+    p_short++;
+    printf ("po 1 inkrem. p_short = %p wskazuje %d\n", p_short, *p_short);
+    p_short = p_short + 1;
+    printf ("po 2 inkrem. p_short = %p wskazuje %d\n", p_short, *p_short);
+    ++p_short;
+    printf ("po 3 inkrem. p_short = %p wskazuje %d\n", p_short, *p_short);
+    p_short--;
+    printf ("po 1 dekrem. p_short = %p wskazuje %d\n", p_short, *p_short);
+    return 0; }
+    */
+/*
+int main() {
+    int *pointer, data, new;
+    data=8;
+    pointer = &data;
+    new = *pointer;
+    printf("data: %d, new: %d\n", data+=1, new);
+    printf("Adress Pointer: %p \nWhat it Pointing: %d", pointer, *pointer);
+    return 0;
+}
+*/
