@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <string.h>
+void wskaznik_funkcja(int *xpointer);
+void tablica_plus_jeden(int tablicka[]);
+void tablica_plus_jeden_wskaznik(int *tablicka[]);
+int porowanie_stringow(char stringpierwszy[], char stringdrugi[]);
+//Lecture 6
+/*int main() {
+    int x, hex, okt, bin;
+    hex = 0xFF;
+    okt = 0123;
+    bin = 0b1001;
+    x='A';
+    printf("%d, %d, %d, %d", hex, x, okt, bin);
+    printf("\n");
+    char litera;
+    for (litera='A';litera<='Z';litera++)
+        printf ("%c ", litera);
+    printf("\n");
+
+    printf ("Kody ASCII liter od A do Z\n");
+    for (litera='A';litera<='Z';litera++)
+        printf ("%d ", litera);
+    printf ("\n");
+    return 0;
+}*/
+//LECTURE 7
+int main() {
+    int *pointer, liczba, kopia;
+    liczba = 123;
+    pointer = &liczba;
+    kopia = *pointer;
+    printf("Liczba: %d, Kopia liczby: %d, Wskaznik: %d, Adres wskaznika: %p\n", liczba, kopia, *pointer, pointer);
+    *pointer = 321;
+    printf("Liczba: %d, Kopia liczby: %d, Wskaznik: %d, Adres wskaznika: %p\n", liczba, kopia, *pointer, pointer);
+    liczba = 987;
+    printf("Liczba: %d, Kopia liczby: %d, Wskaznik: %d, Adres wskaznika: %p\n", liczba, kopia, *pointer, pointer);
+    kopia = *pointer;
+    printf("Liczba: %d, Kopia liczby: %d, Wskaznik: %d, Adres wskaznika: %p\n", liczba, kopia, *pointer, pointer);
+
+
+    char string1[] = "Janek";
+    int i;
+    for (i = 0; i < strlen(string1); i++) {
+        printf("%c", string1[i]);
+    }
+
+
+    printf("\n");
+    int tablica[] = {10, 20, 30, 40};
+    int *wskaznik;
+    wskaznik = &tablica[0];
+    printf("adres: %p dane: %d\n", wskaznik, *wskaznik);
+    wskaznik++;
+    printf("adres: %p dane: %d\n", wskaznik, *wskaznik);
+    wskaznik++;
+    printf("adres: %p dane: %d\n", wskaznik, *wskaznik);
+    wskaznik--;
+    printf("adres: %p dane: %d\n", wskaznik, *wskaznik);
+
+    char napis[] = "katedra informatyki", *wsk;
+    int dlugosc;
+    wsk = &napis[0];
+    dlugosc = strlen(napis);
+    for (i = 0; i < dlugosc; i++) {
+        printf("adres %p: dane: %c\n", wsk, *wsk);
+        wsk += 1;
+    }
+
+    int i_war, *ptr_1, **ptr_2;
+    i_war = 77;
+    ptr_1 = &i_war;
+    ptr_2 = &ptr_1;
+    printf("Pojedyncza posredniosc: \n");
+    printf(" *ptr_1 = %p wskazuje wartosc %d\n", ptr_1, *ptr_1);
+    printf("Podwojna posredniosc: \n");
+    printf(" **ptr_2 = %p wskazuje *ptr_1 %p i wartosc %d\n", ptr_2, *ptr_2, **ptr_2);
+
+
+    int x, *xpointer;
+    x = 15;
+    xpointer = &x;
+    printf("x: %d\n", x);
+    wskaznik_funkcja(xpointer);
+    printf("x: %d\n", x);
+
+    int tab_i[] = {5, 4, 3, 2, 1};
+    int *ptr_int[5], el;
+    char *napisy[] =
+            {"1w_bardzo dlugi napis\n",
+             "2w_krotki\n",
+             "3w_trzeci wiersz\n",
+             };
+    printf("Zawartosc tablicy int: ");
+    for (el = 0; el < 5; el++) {
+        printf("%d ", tab_i[el]);
+    }
+    printf("\n");
+    for (el = 0; el < 5; el++){
+        ptr_int[el] = &tab_i[el];
+    }
+    printf ("Zawartosc tablicy za posrednictwem tablicy wskaznikow: ");
+    for (el=0; el<5; el++) {
+        printf("%d ", *ptr_int[el]);
+    }
+    printf ("\nTablica z napisami wskaznikow:\n");
+    for (el=0; el<3; el++) {
+        printf("%s", napisy[el]);
+    }
+
+
+    //lecture 8
+    int tablicka[10], *wskazniktablicki[10];
+    for(i=0;i<10;i++){//przypisanie do wskaznikow
+        wskazniktablicki[i] = &tablicka[i];
+    }
+    for(i=0;i<10;i++){//Uzupelnienie tablicy danymi
+        printf("podaj liczbe: ");
+        scanf("%d", &tablicka[i]);
+    }
+    for(i=0;i<10;i++){//pokazanie danych bazowych
+        printf("Liczbe: %d", tablicka[i]);
+    }
+    printf("\n");
+    tablica_plus_jeden(tablicka);
+    for(i=0;i<10;i++){//pokazanie danych powiekszonych o 1 normalnie
+        printf("Liczbe: %d", tablicka[i]);
+    }
+    printf("\n");
+    tablica_plus_jeden_wskaznik(wskazniktablicki);
+    for(i=0;i<10;i++){//pokazanie danych powiekszonych o 1 po przemieleniu przez funkcje z wskaznikami
+        printf("Liczbe: %d", tablicka[i]);
+    }
+
+
+    fflush(stdin);
+    char stringjeden[10], stringdrugi[10];
+    int rezultat;
+    printf("Podaj pierwszy string: \n");
+    gets(stringjeden);
+    printf("Podaj drugi string: \n");
+    gets(stringdrugi);
+    puts(stringjeden);
+    puts(stringdrugi);
+    rezultat=porowanie_stringow(stringjeden, stringdrugi);
+    if(rezultat==1){
+        printf("Sa takie same\n");
+    }
+    else{
+        printf("Sa rozne\n");
+    }
+    return 0;
+}
+void wskaznik_funkcja(int *xpointer){
+    *xpointer = 25;
+}
+void tablica_plus_jeden(int tablicka[]){
+    int i;
+    for(i=0;i<10;i++){
+        tablicka[i]=tablicka[i]+1;
+    }
+}
+void tablica_plus_jeden_wskaznik(int *tablicka[]){
+    int i;
+    for(i=0;i<10;i++){
+        *tablicka[i]=*tablicka[i]+1;
+    }
+}
+int porowanie_stringow(char stringpierwszy[], char stringdrugi[]){
+    int dlugosc, i;
+    if(strlen(stringpierwszy)!= strlen(stringdrugi)){
+        return 0;
+    }
+    dlugosc = strlen(stringpierwszy);
+    for(i=0;i<dlugosc;i++){
+        if(stringpierwszy[i]!=stringdrugi[i]){
+            return 0;
+        }
+    }
+    return 1;
+}
