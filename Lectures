@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 void wskaznik_funkcja(int *xpointer);
 void tablica_plus_jeden(int tablicka[]);
 void tablica_plus_jeden_wskaznik(int *tablicka[]);
-int porowanie_stringow(char stringpierwszy[], char stringdrugi[]);
-//Lecture 6
+int porowanie_stringow(char stringpierwszy[], char stringdrugi[], int *wskdorezultatu);
+    //Lecture 6
 /*int main() {
     int x, hex, okt, bin;
     hex = 0xFF;
@@ -24,7 +25,7 @@ int porowanie_stringow(char stringpierwszy[], char stringdrugi[]);
     printf ("\n");
     return 0;
 }*/
-//LECTURE 7
+    //LECTURE 7
 int main() {
     int *pointer, liczba, kopia;
     liczba = 123;
@@ -40,10 +41,12 @@ int main() {
 
 
     char string1[] = "Janek";
+    char *string = "Janekk";
     int i;
     for (i = 0; i < strlen(string1); i++) {
         printf("%c", string1[i]);
     }
+    puts(string);
 
 
     printf("\n");
@@ -63,7 +66,7 @@ int main() {
     wsk = &napis[0];
     dlugosc = strlen(napis);
     for (i = 0; i < dlugosc; i++) {
-        printf("adres %p: dane: %c\n", wsk, *wsk);
+        printf("adres %p:, adres %#x, dane: %c\n", wsk, wsk, *wsk);
         wsk += 1;
     }
 
@@ -91,15 +94,15 @@ int main() {
              "2w_krotki\n",
              "3w_trzeci wiersz\n",
              };
-    printf("Zawartosc tablicy int: ");
+    printf("Zawartosc tablicy int: ");//zawartosc
     for (el = 0; el < 5; el++) {
         printf("%d ", tab_i[el]);
     }
-    printf("\n");
+    printf("\n");//zagnieżdżenie
     for (el = 0; el < 5; el++){
         ptr_int[el] = &tab_i[el];
     }
-    printf ("Zawartosc tablicy za posrednictwem tablicy wskaznikow: ");
+    printf ("Zawartosc tablicy za posrednictwem tablicy wskaznikow: ");//wyłuskanie
     for (el=0; el<5; el++) {
         printf("%d ", *ptr_int[el]);
     }
@@ -132,23 +135,89 @@ int main() {
         printf("Liczbe: %d", tablicka[i]);
     }
 
-
+    printf("\n");
     fflush(stdin);
     char stringjeden[10], stringdrugi[10];
-    int rezultat;
+    int rezultat = 0;
     printf("Podaj pierwszy string: \n");
     gets(stringjeden);
     printf("Podaj drugi string: \n");
     gets(stringdrugi);
     puts(stringjeden);
     puts(stringdrugi);
-    rezultat=porowanie_stringow(stringjeden, stringdrugi);
+    porowanie_stringow(stringjeden, stringdrugi, &rezultat);
+    printf("%d", rezultat);
     if(rezultat==1){
         printf("Sa takie same\n");
     }
     else{
         printf("Sa rozne\n");
     }
+
+    printf("\n");
+    printf("\n");
+
+    //Lecture 9
+    int *ptr1,*ptr2, *ptr3, *ptr4, size1;
+    printf ("Podaj rozmiar 1. obszaru (>=4): ");
+    scanf ("%d", &size1);
+    ptr1 = (int *) malloc (sizeof(int)*size1);
+    printf ("Adres zaalokowanego obszaru mallockiem: %p \n", ptr1);
+    for (i=0; i<size1; i++){
+        printf ("%#X ", (ptr1+i));
+    }
+    printf ("\n");
+    printf ("Zawartosc elementow mallockiem:\n");
+    for (i=0; i<size1; i++){
+        printf ("%d ", *(ptr1+i));
+    }
+    printf("\n");
+    memset(ptr1, 0, size1*sizeof(int));
+    printf ("Zawartosc elementow ptr1 po memset():\n");
+    for(i=0;i<size1;i++){
+        printf("%d ", *(ptr1+i));
+    }
+    printf ("\n");
+    printf ("Adres zaalokowanego obszaru callockiem: %p \n", ptr2);
+    ptr2 = (int *) calloc(size1,sizeof(int)*size1);
+    for (i=0; i<size1; i++){
+        printf ("%#X ", (ptr2+i));
+    }
+    printf ("\n");
+    printf ("Zawartosc elementow callockiem:\n");
+    for (i=0; i<size1; i++){
+        printf ("%d ", *(ptr2+i));
+    }
+    printf ("\n");//Nadpisanie danych
+    for (i=0; i<size1; i++){
+        *(ptr2+i) = i;
+    }
+    for (i=0; i<size1; i++){
+        printf("%d", *(ptr2+i));
+    }
+    printf("\nPowiekszenie rozmiaru pamiec Reallockiem\n");
+    ptr3 = (int *)realloc(ptr2,2*size1*sizeof(int));
+    for(i=0;i<2*size1;i++){
+        printf("%#x ", ptr3+i);
+    }
+    printf("\n");
+    for(i=0;i<2*size1;i++){
+        printf("%d ", *(ptr3+i));
+    }
+    printf("\n");
+    printf("Memmove do ptr4 z ptr3 \n");
+    ptr4 = (int *) calloc(2*size1,sizeof(int)*2*size1);
+    memmove(ptr4,ptr3,2*size1*sizeof(int));
+    for(i=0;i<2*size1;i++){
+        printf("%#x ", ptr4+i);
+    }
+    printf("\n");
+    for(i=0;i<2*size1;i++){
+        printf("%d ", *(ptr4+i));
+    }
+    free (ptr1);
+    free(ptr3);
+    free(ptr4);
     return 0;
 }
 void wskaznik_funkcja(int *xpointer){
@@ -166,16 +235,19 @@ void tablica_plus_jeden_wskaznik(int *tablicka[]){
         *tablicka[i]=*tablicka[i]+1;
     }
 }
-int porowanie_stringow(char stringpierwszy[], char stringdrugi[]){
+int porowanie_stringow(char stringpierwszy[], char stringdrugi[], int *wskdorezultatu){
     int dlugosc, i;
+    dlugosc = strlen(stringpierwszy);
     if(strlen(stringpierwszy)!= strlen(stringdrugi)){
+        *wskdorezultatu = 0;
         return 0;
     }
-    dlugosc = strlen(stringpierwszy);
     for(i=0;i<dlugosc;i++){
         if(stringpierwszy[i]!=stringdrugi[i]){
+            *wskdorezultatu = 0;
             return 0;
         }
     }
-    return 1;
+    *wskdorezultatu = 1;
+    return 0;
 }
