@@ -1,131 +1,86 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-struct hotel{
+#include <string.h>//Potrzebne do dzialan na stringach kopiowanie/porownanie
+#include <stdlib.h>//Potrzebne do mallocka
+
+struct hotel{       //Tworzenie struktury
     char pokoju[3];
     float cena;
     int status;
 };
-float zysk(int n, struct hotel tablicka[]);
-int rezerwacja(int n, struct hotel tablicka[]);
-void koszt(int n, struct hotel tablicka[], int cennik[]);
-struct hotel *wolne(int n, struct hotel tablicka[], int *wk);
-char* rezerwacjaa(struct hotel tablica[], int);
-double* koszty(struct hotel tablica[], int);
+
+double* koszty(struct hotel tablica[], int);        //ZAD1 Fukcja zwracająca wskaznik do tablicy dynamicznej
+void koszt(int n, struct hotel tablicka[], int cennik[]); //ZAD1 moje, Funkcja która wypełnia tablice cenami pokoi
+struct hotel *wolne(int n, struct hotel tablicka[], int *wk); //ZAD2 Funkcja ktora tworzy i zwraca tablice struktur
+float zysk(int n, struct hotel tablicka[]);         //ZAD 3 Funkcja zwraca zysk z zajetych pokoi
+int rezerwacja(int n, struct hotel tablicka[]);     //ZAD 4 moje, Funkcja zwraca 1 jesli jest wolne, 0 jeśli zajete
+char* rezerwacjaa(struct hotel tablica[], int);     //ZAD 4 Funkcja Tworzy i zwraca wskaznik do  ciagu znakow
+                                                    // z dynamiczna allokacja pamieci
 int main(){
     int n,i,czwarte;
     float trzecie;
     puts("Podaj liczbe pokoi: ");
     scanf("%d", &n);
     int pierwsze[n];
-    struct hotel tablica[n];
-    for(i=0;i<n;i++){
-        printf("Podaj kod pokoju p%d: ", i+1);
-        fflush(stdin);
+    struct hotel tablica[n];    //Stworzenie tablicy struktur
+
+
+    for(i=0;i<n;i++){           //Wypełnienie danymi tablicy struktu
+        printf("Podaj kod pokoju nr.%d: ", i+1);
+        fflush(stdin);      //Czyszczenie Bufora
         gets(tablica[i].pokoju);
-        printf("Podaj cene za pokoj p%d: ", i+1);
+        printf("Podaj cene za pokoj nr.%d: ", i+1);
         scanf("%f", &tablica[i].cena);
-        printf("Podaj status za pokoj p%d: ", i+1);
+        printf("Podaj status za pokoj nr.%d: ", i+1);
         scanf("%d", &tablica[i].status);
+        printf("\n");
     }
-    printf("\n");
+
+    printf("\n");          //Wyświetlenie pokoi
     for(i=0;i<n;i++){
         printf("Pokoj p%d o nazwie:%s, cena:%f, status:%d: \n", i+1, tablica[i].pokoju, tablica[i].cena, tablica[i].status);
     }
-    trzecie = zysk(n,tablica);
+
+
+    double *M;      //ZAD1 Wyswietlenie cene za pokoj na jedna osobe ZAD1
+    M = koszty(tablica, n);
+    for(i=0;i<n;i++){
+        printf("\nDla pokoju <%s> cena dla jednej osoby wynosi: %f zl", tablica[i].pokoju, M[i]);
+    }
+
+
+    koszt(n,tablica,pierwsze); //ZAD1 Wyswietlenie wypelnionej tablicy w funkcji
+    for(i=0;i<n;i++){
+        printf("Cena pokoju nr%d wynosi:%d\n",i+1, pierwsze[i]);
+    }
+
+
+    int wki, *wskaznik_do_wk; //ZAD2 Wyswietlenie zwroconej tablicy
+    wskaznik_do_wk = &wki; //Zagnieżdżenie wskaznika
+    struct hotel *drugie = wolne(n,tablica,wskaznik_do_wk);
+    for(i=0;i<wki;i++){
+        printf("Jaki wolny: %s\n", drugie[i].pokoju);
+        printf("Cena: %f", drugie[i].cena);
+    }
+
+
+    trzecie = zysk(n,tablica); //ZAD3 obliczenie zysku
     printf("Zysk: %f\n", trzecie);
-    czwarte = rezerwacja(n,tablica);
+
+
+    czwarte = rezerwacja(n,tablica); //ZAD 4 moje, funkcja zwraca 1 jesli jest wolne, 0 jeśli zajete
     if(czwarte==1){
         printf("Pokoj dla 3 osob jest wolny\n");
     }
     if(czwarte==0){
         printf("Pokoj dla 3 osob nie jest wolny\n");
     }
-    koszt(n,tablica,pierwsze);
-    for(i=0;i<n;i++){
-        printf("Cena pokoju nr%d wynosi:%d\n",i+1, pierwsze[i]);
-    }
-    int wki, *wskaznik_do_wk;
-    wskaznik_do_wk = &wki;
-    struct hotel *drugie = wolne(n,tablica,wskaznik_do_wk);
-    for(i=0;i<wki;i++){
-        printf("Jaki wolny: %s\n", drugie[i].pokoju);
-        printf("Cena: %f", drugie[i].cena);
-    }
-    printf("\nCzy sa wolne pokoje p3: %s", rezerwacjaa(tablica, n));
-
-    double *M;
-    M = koszty(tablica, n);
-    for(i=0;i<n;i++){
-        printf("\nDla pokoju <%s> cena dla jednej osoby wynosi: %f zl", tablica[i].pokoju, M[i]);
-    }
-}
 
 
+    printf("\nCzy sa wolne pokoje p3: %s", rezerwacjaa(tablica, n)); //ZAD4
+}
 
-float zysk(int n, struct hotel tablicka[]){
-    int i, zarobek=0;
-    for(i=0;i<n;i++){
-        if(tablicka[i].status==2){
-            zarobek+=tablicka[i].cena;
-        }
-    }
-    return zarobek;
-}
-int rezerwacja(int n, struct hotel tablicka[]){
-    int i, rezerw=0;
-    char p[3]="p3";
-    for(i=0;i<n;i++){
-        if(strcmp(tablicka[i].pokoju,p)==0){
-            if(tablicka[i].status==1){
-                rezerw=1;
-            }
-        }
-    }
-    return rezerw;
-}
-void koszt(int n, struct hotel tablicka[], int cennik[]){
-    int i;
-    for(i=0;i<n;i++){
-        cennik[i]=tablicka[i].cena;
-    }
-}
-struct hotel *wolne(int n, struct hotel tablicka[], int *wk){
-    int i, k=0;
-    for(i=0;i<n;i++){
-        if (tablicka[i].status ==1){
-            k+=1;
-        }
-    }
-    *wk=k;
-    int d=0;
-    struct hotel *TH = (struct hotel*)malloc(k*sizeof(struct hotel));
-    for(i=0;i<n;i++){
-        if(tablicka[i].status == 1){
-            strcpy(TH[d].pokoju,tablicka[i].pokoju);
-            TH[d].cena = tablicka[i].cena;
-            d+=1;
-        }
-    }
-    return TH;
-};//Kolegi
-char* rezerwacjaa(struct hotel tablica[], int n){
-    int i;
-    char *rez = (char*) malloc (4 * sizeof(char));
-    for(i=0;i<n;i++){
-        if(tablica[i].pokoju[1] == '3'){
-            if(tablica[i].status == 1){
-                strcpy(rez, "tak");
-                return rez;
-            }
-        }
-    }
-    strcpy(rez, "nie");
-    return rez;
-
-}
-double* koszty(struct hotel tablica[], int n){
-    double* tab=(double *)malloc( n * sizeof (int) );
+double* koszty(struct hotel tablica[], int n){ //ZAD1
+    double* tab=(double *)malloc( n * sizeof (int) ); //Tworzenie tablicy dynamicznej
     int i;
     for (i=0;i<n;i++){
         if(tablica[i].pokoju[1] == '1'){
@@ -138,5 +93,71 @@ double* koszty(struct hotel tablica[], int n){
             tab[i] = tablica[i].cena/3;
         }
     }
-    return tab;
+    return tab; //Zwrocenie nazwy tablicy- wskaznik do pierwszego elementu
+}
+
+void koszt(int n, struct hotel tablicka[], int cennik[]){ //Zad1 moje. Zapisanie do tablicy całych cen pokoi
+    int i;
+    for(i=0;i<n;i++){
+        cennik[i]=tablicka[i].cena;
+    }
+}
+
+struct hotel *wolne(int n, struct hotel tablicka[], int *wk){//Zad2 Tworzenie dynamicznej tablicy struktur i
+                                                            // zwracanie wkaznika do niej
+    int i, k=0;
+    for(i=0;i<n;i++){
+        if (tablicka[i].status ==1){
+            k+=1;
+        }
+    }
+    *wk=k; //!! ZWROCENIE WARTOSCI PRZEZ WSKAZNIK
+    int d=0;
+    struct hotel *TH = (struct hotel*)malloc(k*sizeof(struct hotel));
+    for(i=0;i<n;i++){
+        if(tablicka[i].status == 1){
+            strcpy(TH[d].pokoju,tablicka[i].pokoju);
+            TH[d].cena = tablicka[i].cena;
+            d+=1;
+        }
+    }
+    return TH;
+};
+
+float zysk(int n, struct hotel tablicka[]){ //ZAD3 zwrocenie zysku
+    int i, zarobek=0;
+    for(i=0;i<n;i++){
+        if(tablicka[i].status==2){
+            zarobek+=tablicka[i].cena;
+        }
+    }
+    return zarobek;
+}
+
+int rezerwacja(int n, struct hotel tablicka[]){ //ZAD4
+    int i, rezerw=0;
+    char p[3]="p3";
+    for(i=0;i<n;i++){
+        if(strcmp(tablicka[i].pokoju,p)==0){//!!Porownanie dwoch ciagow znakowych, jesli sa takie same, strcmp zwraca 0
+            if(tablicka[i].status==1){
+                rezerw=1;
+            }
+        }
+    }
+    return rezerw;
+}
+
+char* rezerwacjaa(struct hotel tablica[], int n){//ZAD 4 Funkcja zwraca ciag znakow
+    int i;
+    char *rez = (char*) malloc (4 * sizeof(char)); //Tworzenie ciagu znakow z dynamiczna allokacja pamieci
+    for(i=0;i<n;i++){
+        if(tablica[i].pokoju[1] == '3'){
+            if(tablica[i].status == 1){
+                strcpy(rez, "tak"); //!!! Kopiowanie stingow
+                return rez;
+            }
+        }
+    }
+    strcpy(rez, "nie"); //!!! Kopiowanie stingow
+    return rez;
 }
