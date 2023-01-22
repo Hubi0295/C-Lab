@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>//Do Mallocka
+#include <string.h>//Do strcmp, strcpy
+struct uczelnia{ //Tworzenie Struktury
+    char miasto[20];
+    char typ[20];
+    int L_s;
+    int L_w;
+};
+int Ile_s(struct uczelnia tablica[], int n); //Funkcja zwraca jaka jest suma studentow
+struct uczelnia *Ucz_wydz(struct uczelnia tablica[], int n, int *ile_b); //Funkcja zwraca stukture uczelni
+                                                                        //Jezeli ma>3wydzialow
+struct uczelnia *Ucz_m(struct uczelnia tablica[], int n, char wybrane[], int *ile);
+                                                 //funkcja zwraca stukture uczelni Jeżeli
+                                                //nazwa podana przez uzytkownika==nazwie uczelni
+
+int main() {
+    int i,n;
+    printf("Podaj dla ilu uczelni chcesz dodac dane: ");
+    scanf("%d", &n);
+    struct uczelnia tablica[n]; //Tworzenie struktury, wypełnienie jej danymi i wyświetlenie
+    for(i=0;i<n;i++){
+        printf("Podaj miasto: ");
+        fflush(stdin);
+        gets(tablica[i].miasto);
+        printf("Podaj typ: ");
+        fflush(stdin);
+        gets(tablica[i].typ);
+        printf("Podaj Liczbe studentow: \n");
+        scanf("%d", &tablica[i].L_s);
+        printf("Podaj Liczbe wydzialow: \n");
+        scanf("%d", &tablica[i].L_w);
+    }
+    for(i=0;i<n;i++){
+        printf("Miasto:%s Typ: %s Liczba studentow:%d Liczba wydzialow:%d \n",
+               tablica[i].miasto, tablica[i].typ, tablica[i].L_s, tablica[i].L_w);
+    }
+
+    int suma;   //Wyswietlenie wyniku 1 funkcji
+    suma= Ile_s(tablica,n);
+    printf("Suma wyszystkich studentow wynosi: %d\n", suma);
+
+
+    int ile_było,*ile_ich_było; //Odbieranie tablicy struktur i wyswietlenie 2 funkcji
+    ile_ich_było=&ile_było;
+    struct uczelnia *wieksze = Ucz_wydz(tablica,n,ile_ich_było);
+    for(i=0;i<ile_było;i++){
+        printf("Uczlenia w ktorej jest wiecej wydzialow niz 3: "
+               "Miasto: %s, Typ: %s Ile studentow: %d, Ile wydzialow: %d\n",
+               wieksze[i].miasto, wieksze[i].typ, wieksze[i].L_s, wieksze[i].L_w);
+    }
+    if(ile_było==0){ //Na wypadek jak nie bedzie zadnej
+        printf("Brak uczelni z liczba wydzialow>3");
+    }
+
+    int wysz, *wsk_wysz; //Odbieranie tablicy struktur i wyswietlenie 3 funkcji
+    wsk_wysz=&wysz;
+    char miejscowosc[20];
+    printf("Podaj w jakim miescie chcesz znalezc uczelnie: ");
+    fflush(stdin);
+    gets(miejscowosc);
+    struct uczelnia *wyszukiwarka = Ucz_m(tablica,n,miejscowosc, wsk_wysz);
+    if(wysz==0){ //Na wypadek jak nie bedzie zadnej
+        printf("Brak uczelni w tym miescie");
+    }
+    for(i=0;i<wysz;i++){
+        printf("Miasto: %s, Typ: %s Ile Studentow: %d, Ile wydzialow: %d\n",
+               wyszukiwarka[i].miasto, wyszukiwarka[i].typ, wyszukiwarka[i].L_s, wyszukiwarka[i].L_w);
+    }
+}
+int Ile_s(struct uczelnia tablica[], int n){//Funkcja 1
+    int i, suma=0;
+    for(i=0;i<n;i++){
+        suma+=tablica[i].L_s;
+    }
+    return suma;
+}
+struct uczelnia *Ucz_wydz(struct uczelnia tablica[], int n, int *ile_b){// Funkcja 2
+    int i, ile=0;
+    for(i=0;i<n;i++){//Pierwsze sprawdzenie ile ich jest
+        if(tablica[i].L_w>3){
+            ile+=1;
+        }
+    }//Potem stworzenie odpowiednio dużej struktury dynamicznej i wypelnienie jej danymi jezeli >3
+    struct uczelnia *informacje = (struct uczelnia*) malloc(ile*sizeof(struct uczelnia));
+    int k=0;//!!
+    for(i=0;i<n;i++){
+        if(tablica[i].L_w>3){
+            strcpy(informacje[k].miasto,tablica[i].miasto);//!!
+            strcpy(informacje[k].typ,tablica[i].typ);
+            informacje[k].L_s = tablica[i].L_s;
+            informacje[k].L_w = tablica[i].L_w;
+            k+=1;//!!
+        }
+    }
+    *ile_b=k;//Zwrocenie przez wskaznik ile bylo takich uczelni
+    return informacje; //Zwrocenie tablicy sturktur
+}
+struct uczelnia *Ucz_m(struct uczelnia tablica[], int n, char wybrane[], int *ile){
+    int i,licznik,k=0;//Sprawdzenie ile jest uczelnie o takiej nazwie
+    for(i=0;i<n;i++){
+        if(strcmp(tablica[i].miasto,wybrane)==0){//!!
+            licznik+=1;
+        }
+    }//Stworzenie dynamicznej tablicy stuktur i wypełnienie jej danymi
+    struct uczelnia *wyszukana = (struct uczelnia*) malloc(licznik*sizeof(struct uczelnia));
+    for(i=0;i<n;i++){
+        if(strcmp(tablica[i].miasto,wybrane)==0){
+            strcpy(wyszukana[k].miasto,tablica[i].miasto);//!!
+            strcpy(wyszukana[k].typ,tablica[i].typ);
+            wyszukana[k].L_s=tablica[i].L_s;
+            wyszukana[k].L_w=tablica[i].L_w;
+            k+=1;//!!
+        }
+    }
+    *ile = k;//Zwrocenie ile ich było przez wskaznik
+    return wyszukana;//Zwrocenie tablicy struktur
+}
