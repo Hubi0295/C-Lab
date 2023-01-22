@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+int *tablica(int w, int k, int tabb[w][k], float *srednia);  //Funkcja zwraca wskaznik do nowej tablicy
+                                                            //i poprzez wskaznik Zwraca średnią
+int main(){
+    int w,k;
+    printf("Podaj ile wierszy ma miec tablica: ");//
+    scanf("%d", &w);
+    printf("Podaj ile kolumn ma miec tablica: ");
+    scanf("%d", &k);
+    int tab[w][k];//Tworzenie Tablicy bazowej
+    int i,j;
+    for(i=0;i<w;i++){
+        for(j=0;j<k;j++){
+            printf("Podaj liczbe: ");
+            scanf("%d", &tab[i][j]);
+        }
+    }
+    for(i=0;i<w;i++){   //Wyswietlenie Tablicy
+        for(j=0;j<k;j++){
+            printf("%d\t", tab[i][j]);
+        }
+        printf("\n");
+    }
+
+    int *wskaznik; //Tworzenie wskaznika ktory bedzie wskazywal nowa tablice
+    float *wskaznik_sredniej, sredniawa; //Tworzenie zmiennej sredniej i wskaznika do niej
+    wskaznik_sredniej=&sredniawa;
+
+    wskaznik= tablica(w,j,tab, wskaznik_sredniej); //Wywolanie funkcji
+    for(i=0;i<w;i++){ //Wyswietlenie danych nowej funkcji
+        printf("Suma z kolumny nr: %d wynosi: %d\n", i+1, wskaznik[i]);//można też *(wskaznik+i)
+    }
+    printf("Srednia z nowej tablicy wynosi: %f\n",sredniawa); //Wyswietlenie sredniej
+}
+
+int *tablica(int w, int k, int tabb[w][k], float *srednia){
+    int *new = (int*) malloc(w*sizeof(int)); //Tworzenie nowej tablicy dynamicznej
+    int i,j, suma_robocza=0, suma_do_sredniej=0;
+    for(i=0;i<w;i++){
+        for(j=0;j<k;j++){
+            suma_robocza+=tabb[i][j];
+        }
+        new[i]=suma_robocza; // Można też *(new+i)
+        suma_robocza=0;
+    }
+    for(i=0;i<w;i++){
+        suma_do_sredniej+= new[i]; // Można też *(new+i)
+    }
+    *srednia=suma_do_sredniej/w; //Zwrocenie sredniej poprzez wskaznik
+    return new;                 //Zwrocenie wskaznika do nowej tablicy
+}
