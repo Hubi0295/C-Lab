@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+int *tablica(int n, int tab[n][n], int *wskaznik);
+int main() {
+    int n;
+    printf("Podaj n :");
+    scanf("%d", &n);
+    int tab[n][n];
+    int i,j;
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("Podaj liczbe: ");
+            scanf("%d", &tab[i][j]);
+        }
+    }
+    int liczba=0,  *wskaznik_do;
+    wskaznik_do = &liczba;
+    int *nowa=tablica(n,tab,wskaznik_do);
+    for(i=0;i<(2*n);i++){
+        printf("Liczba: %d", nowa[i]);
+    }
+    printf("Max: %d", liczba);
+
+}
+int *tablica(int n, int tab[n][n], int *wskaznik){
+    int i,j,k=0,max,min;
+    int *new = (int *) malloc(2*n*sizeof(int));
+    for(i=0;i<n;i++){ min=tab[i][0];
+        for(j=0;j<n;j++){
+            if(tab[i][j]<min){
+                min=tab[i][j];
+            }
+        }
+        new[k]=min;k+=1;
+    }
+    for(i=0;i<n;i++){ max=tab[i][0];
+        for(j=0;j<n;j++){
+            if(tab[i][j]>max){
+                max=tab[i][j];
+            }
+        }
+        new[k]=max;k+=1;
+    }
+    for(i=0;i<(2*n);i++){max=new[0];
+        if(new[i]>min){
+            max=new[i];
+        }
+    }
+    *wskaznik=max;
+    return new;
+}
